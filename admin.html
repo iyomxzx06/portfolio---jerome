@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Portfolio link builder</title>
+<style>
+:root{--bg:#0b0c0a;--panel:#151713;--line:#2a2d27;--text:#f3f4f0;--muted:#b9bdb1;--lime:#c6f432;--ink:#10120a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:16px/1.55 "Segoe UI",system-ui,sans-serif}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+.page{width:min(1180px,94%);margin:0 auto;padding:36px 0 64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+header{grid-column:1/-1}
+h1{font:900 1.9rem/1.1 "Arial Black",sans-serif;letter-spacing:-.02em}
+header p{color:var(--muted);margin-top:6px}
+.col{display:grid;gap:18px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+h2{font-size:1.02rem;margin-bottom:4px}
+.hint{color:var(--muted);font-size:.88rem;margin-bottom:12px}
+textarea,input[type=text]{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font:inherit}
+textarea{min-height:130px;resize:vertical}
+label{display:block;font-size:.88rem;color:var(--muted);margin:12px 0 4px}
+.btn{background:var(--lime);color:var(--ink);border:2px solid var(--lime);border-radius:999px;padding:10px 20px;font:700 .95rem inherit;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--lime)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 15px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip:hover{border-color:var(--muted);color:var(--text)}
+.chip[aria-pressed=true]{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700}
+.add{display:flex;gap:8px;margin-top:12px}
+.add input{flex:1}
+.out{font-family:"Courier New",monospace;font-size:.92rem;word-break:break-all;background:var(--bg);border:1px dashed var(--lime);border-radius:10px;padding:12px 14px;min-height:48px}
+.msg{color:var(--lime);font-size:.9rem;min-height:1.4em;margin-top:8px}
+iframe{width:100%;height:560px;border:1px solid var(--line);border-radius:10px;background:#000}
+.hist{list-style:none;display:grid;gap:8px}
+.hist li{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:.88rem}
+.hist span{color:var(--muted);word-break:break-all}
+.hist button{background:none;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:5px 10px;cursor:pointer;font:inherit;font-size:.82rem;white-space:nowrap}
+.hist button:hover{border-color:var(--lime);color:var(--lime)}
+@media(max-width:900px){.page{grid-template-columns:minmax(0,1fr)}iframe{height:420px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+ <header>
+  <h1>Portfolio link builder</h1>
+  <p>Pick what the client cares about, copy the link, send it. Matching videos show first.</p>
+ </header>
+
+ <div class="col">
+  <section class="card">
+   <h2>Paste the job post</h2>
+   <p class="hint">I'll look for keywords and select the matching categories for you. You can change them after.</p>
+   <textarea id="job" placeholder="Paste the job description here"></textarea>
+   <div class="row"><button class="btn" id="detect" type="button">Detect categories</button><button class="btn ghost" id="clear" type="button">Clear all</button></div>
+   <p class="msg" id="detectMsg" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+   <h2>Categories to show first</h2>
+   <p class="hint">Click to turn on or off. The video with the most matches goes to the top.</p>
+   <div class="chips" id="chips" role="group" aria-label="Categories"></div>
+   <div class="add">
+    <input type="text" id="custom" placeholder="Add your own tag, e.g. fitness" aria-label="Add your own tag">
+    <button class="btn ghost" id="addBtn" type="button">Add</button>
+   </div>
+  </section>
+
+  <section class="card">
+   <h2>Client and site</h2>
+   <label for="client">Client or company name (optional)</label>
+   <input type="text" id="client" placeholder="Acme Realty">
+   <label for="base">Your portfolio URL</label>
+   <input type="text" id="base" placeholder="https://yoursite.com/">
+   <p class="hint" style="margin-top:6px">Leave it as index.html while testing on your computer.</p>
+  </section>
+ </div>
+
+ <div class="col">
+  <section class="card">
+   <h2>Your link</h2>
+   <div class="out" id="out" aria-live="polite"></div>
+   <div class="row">
+    <button class="btn" id="copy" type="button">Copy link</button>
+    <a class="btn ghost" id="open" href="#" target="_blank" rel="noopener">Open in new tab</a>
+   </div>
+   <p class="msg" id="copyMsg" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+   <h2>Preview</h2>
+   <p class="hint">This is what the client will see. It needs index.html in the same folder.</p>
+   <iframe id="preview" title="Portfolio preview"></iframe>
+  </section>
+
+  <section class="card">
+   <h2>Recent links</h2>
+   <ul class="hist" id="hist"></ul>
+   <p class="hint" id="histEmpty">Links you copy will be listed here.</p>
+  </section>
+ </div>
+</div>
+
+<script>
+/* TAGS: keep these the same as the tags in your index.html projects */
+const TAGS=["ugc","ad","ai","short-form","shorts","real-estate","tour","cinematic","story","food","skincare","gaming","meme","vsl","long-form","health","explainer"];
+
+/* KEYWORDS: words in a job post that turn a tag on */
+const KEYWORDS={
+ "ugc":/\bugc\b|user[- ]generated|creator content/,
+ "ad":/\bads?\b|advert|commercial|promo|paid social|performance creative/,
+ "ai":/\bai\b|artificial intelligence|generative|midjourney|runway|\bsora\b|\bveo\b/,
+ "short-form":/short[- ]?form|reels|tiktok|vertical video/,
+ "shorts":/youtube shorts|\bshorts\b/,
+ "real-estate":/real[- ]?estate|property|properties|listing|realtor|condo|house tour/,
+ "tour":/\btours?\b|walkthrough|walk-through/,
+ "cinematic":/cinematic|film|narrative|color grad/,
+ "story":/storytell|\bstory\b|\bstories\b/,
+ "food":/\bfood\b|restaurant|f&b|cafe/,
+ "skincare":/skincare|skin care|beauty|cosmetic/,
+ "gaming":/gaming|gamer|esports/,
+ "meme":/\bmemes?\b/,
+ "vsl":/\bvsl\b|video sales letter|sales video/,
+ "long-form":/long[- ]?form|youtube video|documentary|podcast/,
+ "health":/health|wellness|supplement|fitness/,
+ "explainer":/explainer|educational|tutorial/
+};
+
+const $=s=>document.querySelector(s);
+const selected=new Set();
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const custom=store.get("plb_custom",[]);
+const allTags=()=>[...TAGS,...custom.filter(t=>!TAGS.includes(t))];
+
+function renderChips(){
+ $("#chips").innerHTML="";
+ allTags().forEach(t=>{
+  const b=document.createElement("button");
+  b.type="button";b.className="chip";b.textContent=t;
+  b.setAttribute("aria-pressed",selected.has(t));
+  b.addEventListener("click",()=>{selected.has(t)?selected.delete(t):selected.add(t);b.setAttribute("aria-pressed",selected.has(t));update()});
+  $("#chips").appendChild(b);
+ });
+}
+
+function buildUrl(forPreview){
+ const picks=[...selected];
+ const client=$("#client").value.trim();
+ const q=[];
+ if(picks.length)q.push("pick="+picks.map(encodeURIComponent).join(","));
+ if(client)q.push("client="+encodeURIComponent(client));
+ const base=forPreview?"index.html":($("#base").value.trim()||"index.html").replace(/\?.*$/,"");
+ return base+(q.length?"?"+q.join("&"):"");
+}
+
+let timer;
+function update(){
+ const url=buildUrl(false);
+ $("#out").textContent=url;
+ $("#open").href=buildUrl(true);
+ $("#copyMsg").textContent="";
+ store.set("plb_base",$("#base").value.trim());
+ clearTimeout(timer);
+ timer=setTimeout(()=>{$("#preview").src=buildUrl(true)},300);
+}
+
+$("#detect").addEventListener("click",()=>{
+ const text=$("#job").value.toLowerCase();
+ if(!text.trim()){$("#detectMsg").textContent="Paste a job post first.";return}
+ selected.clear();
+ allTags().forEach(t=>{
+  const re=KEYWORDS[t];
+  if(re?re.test(text):text.includes(t))selected.add(t);
+ });
+ $("#detectMsg").textContent=selected.size?"Found: "+[...selected].join(", ")+". Change anything that looks off.":"No match found. Pick categories yourself below.";
+ renderChips();update();
+});
+$("#clear").addEventListener("click",()=>{selected.clear();$("#detectMsg").textContent="";renderChips();update()});
+
+function addCustom(){
+ const t=$("#custom").value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
+ if(!t)return;
+ if(!allTags().includes(t)){custom.push(t);store.set("plb_custom",custom)}
+ selected.add(t);$("#custom").value="";renderChips();update();
+}
+$("#addBtn").addEventListener("click",addCustom);
+$("#custom").addEventListener("keydown",e=>{if(e.key==="Enter")addCustom()});
+$("#client").addEventListener("input",update);
+$("#base").addEventListener("input",update);
+
+/* Recent links */
+function renderHist(){
+ const h=store.get("plb_hist",[]);
+ const ul=$("#hist");ul.innerHTML="";
+ $("#histEmpty").hidden=h.length>0;
+ h.forEach(item=>{
+  const li=document.createElement("li");
+  const s=document.createElement("span");s.textContent=(item.client?item.client+" · ":"")+item.url;
+  const b=document.createElement("button");b.type="button";b.textContent="Copy";
+  b.addEventListener("click",()=>navigator.clipboard&&navigator.clipboard.writeText(item.url).then(()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1500)}));
+  li.append(s,b);ul.appendChild(li);
+ });
+}
+$("#copy").addEventListener("click",()=>{
+ const url=buildUrl(false);
+ const done=()=>{
+  $("#copyMsg").textContent="Link copied.";
+  const h=store.get("plb_hist",[]).filter(x=>x.url!==url);
+  h.unshift({url,client:$("#client").value.trim()});
+  store.set("plb_hist",h.slice(0,20));renderHist();
+ };
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,()=>{$("#copyMsg").textContent="Couldn't copy. Select the link above and copy it."});
+ else $("#copyMsg").textContent="Couldn't copy. Select the link above and copy it.";
+});
+
+$("#base").value=store.get("plb_base","");
+renderChips();renderHist();update();
+</script>
+</body>
+</html>

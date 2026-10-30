@@ -106,6 +106,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,12,10,.82);backdrop-f
 .pi svg{width:20px;margin-left:3px;fill:var(--ink)}
 .body{padding:18px 18px 22px}
 .cat{color:var(--lime);font-size:.82rem;font-weight:700}
+.pick{display:inline-block;margin-left:8px;background:var(--lime);color:var(--ink);font-size:.68rem;font-weight:700;border-radius:999px;padding:2px 9px;vertical-align:middle}
 .body h3{font-size:1.15rem;margin:6px 0 8px}
 .card.wide .body h3{font-size:1.8rem}
 .body p{color:var(--muted);font-size:.88rem;line-height:1.5;margin-bottom:14px}
@@ -265,7 +266,7 @@ footer{border-top:1px solid var(--line);padding:36px 0}
  <section id="work">
   <div class="wrap">
    <div class="head">
-    <div><p class="label">Featured projects</p><h2>Selected work</h2></div>
+    <div><p class="label">Featured projects</p><h2 id="workTitle">Selected work</h2></div>
     <p class="note">These are my practice and concept edits, not paid client work.</p>
    </div>
    <div class="filters" id="filters" role="group" aria-label="Filter projects by category">
@@ -368,6 +369,7 @@ const TOOLS=[];
    - Add a project: copy one { ... } block, add a comma, edit it.
    - Remove a project: delete its whole { ... } block.
    - category must be: "cinematic", "social", "brand" or "realestate".
+   - tags: words used by ?pick=... links (keep them the same as in admin.html).
    - featured:true puts a project in the first group. The rest are
      revealed by the "Show more" button (best 3 or 4 work best).
    - videoUrl: paste a YouTube, Vimeo, .mp4 or .webm link.
@@ -382,28 +384,28 @@ const projects = [
  /* featured:true = shown first. Everything else sits behind the "Show more" button. */
  {featured:true,title:"Vigewell Collagen Wand",category:"brand",categoryLabel:"Ad Concept",
   description:"A skincare product ad with a problem-to-solution flow, animated callouts, color-shifting backgrounds and highlighted captions.",
-  thumbnail:"project-7.jpg",videoUrl:"vigewell-collagen-wand.mp4",videoType:"file",orientation:"vertical",tools:["Motion graphics","Captions","Ad structure"]},
+  thumbnail:"project-7.jpg",videoUrl:"vigewell-collagen-wand.mp4",videoType:"file",orientation:"vertical",tags:["ugc","skincare","ad","ai"],tools:["Motion graphics","Captions","Ad structure"]},
  {featured:true,title:"The Secret Heir",category:"social",categoryLabel:"YouTube Short",
   description:"An AI-animated story short with bold word-by-word captions and a twist reveal, built to hold attention from the first line.",
-  thumbnail:"project-5.jpg",videoUrl:"secret-heir.mp4",videoType:"file",orientation:"vertical",tools:["Captions","AI visuals","Story pacing"]},
+  thumbnail:"project-5.jpg",videoUrl:"secret-heir.mp4",videoType:"file",orientation:"vertical",tags:["short-form","shorts","ai","story"],tools:["Captions","AI visuals","Story pacing"]},
  {featured:true,title:"Dream Home Tour",category:"realestate",categoryLabel:"Real Estate Short-Form",
   description:"A vertical real estate tour with AI visuals, room-by-room labels and smooth transitions from the entrance to the kitchen.",
-  thumbnail:"project-6.jpg",videoUrl:"catchy_home_tour-compressed.mp4",videoType:"file",orientation:"vertical",tools:["Motion text","Transitions","Pacing"]},
+  thumbnail:"project-6.jpg",videoUrl:"catchy_home_tour-compressed.mp4",videoType:"file",orientation:"vertical",tags:["real-estate","tour","short-form","ai"],tools:["Motion text","Transitions","Pacing"]},
  {featured:true,title:"Burger Station Ad",category:"brand",categoryLabel:"Ad Concept",
   description:"A one-minute vertical food ad concept that moves from fire and lava into a juicy burger reveal.",
-  thumbnail:"project-3.jpg",videoUrl:"lv_0_20261020100907.mp4",videoType:"file",orientation:"vertical",tools:["Ad structure","Sound","Motion text"]},
+  thumbnail:"project-3.jpg",videoUrl:"lv_0_20261020100907.mp4",videoType:"file",orientation:"vertical",tags:["food","ad","ai"],tools:["Ad structure","Sound","Motion text"]},
  {title:"Pick Your Game",category:"social",categoryLabel:"Short-Form Edit",
   description:"A fast vertical short mixing game visuals, meme clips and bold word-by-word captions.",
-  thumbnail:"project-1.jpg",videoUrl:"lv_0_20260929212649.mp4",videoType:"file",orientation:"vertical",tools:["Captions","Quick cuts","Meme timing"]},
+  thumbnail:"project-1.jpg",videoUrl:"lv_0_20260929212649.mp4",videoType:"file",orientation:"vertical",tags:["short-form","gaming","meme"],tools:["Captions","Quick cuts","Meme timing"]},
  {title:"Train Etiquette",category:"social",categoryLabel:"YouTube Short",
   description:"A vertical short about commuter manners, using animated visuals, real clips and on-screen captions.",
-  thumbnail:"project-2.jpg",videoUrl:"lv_0_20261003095001.mp4",videoType:"file",orientation:"vertical",tools:["Captions","AI visuals","Pacing"]},
+  thumbnail:"project-2.jpg",videoUrl:"lv_0_20261003095001.mp4",videoType:"file",orientation:"vertical",tags:["shorts","short-form","ai","explainer"],tools:["Captions","AI visuals","Pacing"]},
  {title:"Neighborhood Afternoon",category:"cinematic",categoryLabel:"Cinematic Short",
   description:"A widescreen street story following kids at play, built around warm color, transitions and slow pacing.",
-  thumbnail:"project-4.jpg",videoUrl:"lv_0_20261021183725.mp4",videoType:"file",orientation:"wide",tools:["Color mood","Transitions","Pacing"]},
+  thumbnail:"project-4.jpg",videoUrl:"lv_0_20261021183725.mp4",videoType:"file",orientation:"wide",tags:["cinematic","story"],tools:["Color mood","Transitions","Pacing"]},
  {title:"Video Sales Letter",category:"brand",categoryLabel:"Ad Concept",
   description:"A long-form vertical sales video with German captions, health animations and lifestyle footage, edited to keep a two-minute pitch moving.",
-  thumbnail:"project-8.jpg",videoUrl:"vsl.mp4",videoType:"file",orientation:"vertical",tools:["Long-form pacing","Captions","B-roll"]}
+  thumbnail:"project-8.jpg",videoUrl:"vsl.mp4",videoType:"file",orientation:"vertical",tags:["vsl","long-form","health","ad"],tools:["Long-form pacing","Captions","B-roll"]}
 ];
 
 /* INTRO VIDEO: plays in the hero (introduction) frame */
@@ -413,6 +415,21 @@ const palettes=[["#2a3314","#0d0e0c"],["#1d2a2e","#0d0e0c"],["#33270f","#0d0e0c"
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* =====================================================
+   PICK LINKS: yoursite.com/?pick=ugc,ad&client=Acme
+   - pick: tags/categories to show first (most matches on top)
+   - client: shows "Selected work for <client>" as the heading
+   Build these links with admin.html.
+   ===================================================== */
+const params=new URLSearchParams(location.search);
+const picks=(params.get("pick")||"").toLowerCase().split(",").map(s=>s.trim()).filter(Boolean);
+const client=(params.get("client")||"").trim().slice(0,60);
+if(client)$("#workTitle").textContent="Selected work for "+client;
+const score=p=>[p.category,...(p.tags||[])].filter(t=>picks.includes(String(t).toLowerCase())).length;
+const anyMatch=projects.some(p=>score(p)>0);
+const isTop=p=>(picks.length&&anyMatch)?score(p)>0:!!p.featured;
+const renderOrder=projects.map((_,i)=>i).sort((a,b)=>score(projects[b])-score(projects[a])||a-b);
 
 function art(p,i){
  const [a,b]=palettes[((i%palettes.length)+palettes.length)%palettes.length];
@@ -448,15 +465,16 @@ function parseVideo(p){
  return null;
 }
 
-/* Render cards */
+/* Render cards (most relevant first when ?pick= is used) */
 const grid=$("#grid");
-projects.forEach((p,i)=>{
+renderOrder.forEach(i=>{
+ const p=projects[i];
  const vert=p.orientation==="vertical",v=parseVideo(p);
  const b=document.createElement("button");
  b.type="button";b.className="card rv "+(vert?"vertical":"wide");b.dataset.category=p.category;b.dataset.index=i;
  b.setAttribute("aria-label","Open project: "+p.title);
  b.innerHTML=`<div class="thumb"><img loading="lazy" width="${vert?360:640}" height="${vert?640:360}" src="${esc(p.thumbnail||art(p,i))}" alt="Thumbnail for ${esc(p.title)}, ${esc(p.categoryLabel)}"><span class="pi"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l16 9-16 9z"/></svg></i></span></div>
- <div class="body"><span class="cat">${esc(p.categoryLabel)}</span><h3>${esc(p.title)}</h3><p>${esc(p.description)}</p><ul class="tags">${p.tools.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`;
+ <div class="body"><span class="cat">${esc(p.categoryLabel)}</span>${picks.length&&score(p)?'<span class="pick">★ Recommended</span>':''}<h3>${esc(p.title)}</h3><p>${esc(p.description)}</p><ul class="tags">${p.tools.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`;
  const thumb=b.querySelector(".thumb"),img=b.querySelector("img");
  let vid=null,posterFromVideo=false;
  function ensureVid(){
@@ -484,15 +502,15 @@ projects.forEach((p,i)=>{
 /* Filters + "Show more" */
 const more=$("#more");
 let currentFilter="all",expanded=false;
-const hasFeatured=projects.some(p=>p.featured);
+const hasFeatured=projects.some(isTop);
 function applyView(){
  document.querySelectorAll(".card").forEach(c=>{
   const p=projects[+c.dataset.index];
   const match=currentFilter==="all"||c.dataset.category===currentFilter;
-  const inGroup=currentFilter!=="all"||expanded||!hasFeatured||p.featured;
+  const inGroup=currentFilter!=="all"||expanded||!hasFeatured||isTop(p);
   c.hidden=!(match&&inGroup);
  });
- const extra=hasFeatured?projects.filter(p=>!p.featured).length:0;
+ const extra=hasFeatured?projects.filter(p=>!isTop(p)).length:0;
  more.hidden=currentFilter!=="all"||extra===0;
  more.textContent=expanded?"Show less":"Show more ("+extra+")";
  more.setAttribute("aria-expanded",expanded);
