@@ -177,6 +177,13 @@ body.lock{overflow:hidden}
 .panel .btn{background:var(--ink);color:var(--lime);border-color:var(--ink)}
 .panel .btn.alt{background:transparent;color:var(--ink)}
 .panel .btn:hover{box-shadow:0 12px 34px rgba(0,0,0,.35)}
+.quick-replies{position:relative;max-width:760px;margin:0 auto 26px;text-align:left}
+.quick-replies>p{margin:0 0 12px;font-size:.88rem;text-transform:uppercase;letter-spacing:.12em}
+.reply-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.reply-button{border:1px solid rgba(16,18,10,.45);border-radius:999px;background:transparent;color:var(--ink);padding:10px 16px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s}
+.reply-button:hover,.reply-button[aria-pressed="true"]{background:var(--ink);color:var(--lime);border-color:var(--ink)}
+.reply-answer{display:none;max-width:600px;margin:16px auto 0;padding:14px 18px;border:1px solid rgba(16,18,10,.35);border-radius:12px;background:rgba(255,255,255,.22);font-size:.95rem;font-weight:600}
+.reply-answer.open{display:block}
 /* FOOTER */
 footer{border-top:1px solid var(--line);padding:36px 0}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:.92rem}
@@ -228,7 +235,7 @@ footer{border-top:1px solid var(--line);padding:36px 0}
    <li><a href="#work">Work</a></li>
    <li><a href="#about">About</a></li>
    <li><a href="#services">Services</a></li>
-   <li><a class="btn" href="#contact">Contact</a></li>
+   <li><a class="btn" href="#contact">Start a Project</a></li>
   </ul>
  </div>
 </header>
@@ -326,6 +333,15 @@ footer{border-top:1px solid var(--line);padding:36px 0}
    <div class="panel">
     <h2>Let's make something that sticks.</h2>
     <p>Have a Short, an ad or an animation idea? I'd love to hear about it. Send me a message and let's talk.</p>
+    <div class="quick-replies" aria-labelledby="quickRepliesTitle">
+     <p id="quickRepliesTitle">Quick answers</p>
+     <div class="reply-buttons">
+      <button class="reply-button" type="button" data-reply="services" aria-pressed="false">What do you edit?</button>
+      <button class="reply-button" type="button" data-reply="process" aria-pressed="false">How do we start?</button>
+      <button class="reply-button" type="button" data-reply="availability" aria-pressed="false">Are you available?</button>
+     </div>
+     <div class="reply-answer" id="replyAnswer" role="status" aria-live="polite"></div>
+    </div>
     <div id="contactBox"></div>
    </div>
   </div>
@@ -353,6 +369,7 @@ footer{border-top:1px solid var(--line);padding:36px 0}
  </div>
 </div>
 
+<script src="data/projects.js"></script>
 <script>
 /* =====================================================
    SITE DETAILS: FILL THESE IN
@@ -365,51 +382,19 @@ const SITE={email:"iyomxzx@gmail.com",instagram:"",youtube:""};
 const TOOLS=[];
 
 /* =====================================================
-   PROJECTS: HOW TO EDIT
-   - Add a project: copy one { ... } block, add a comma, edit it.
-   - Remove a project: delete its whole { ... } block.
+   PROJECTS
+   Project data lives in data/projects.js so it can be edited separately.
    - category must be: "cinematic", "social", "brand" or "realestate".
    - tags: words used by ?pick=... links (keep them the same as in admin.html).
    - featured:true puts a project in the first group. The rest are
-     revealed by the "Show more" button (best 3 or 4 work best).
-   - videoUrl: paste a YouTube, Vimeo, .mp4 or .webm link.
+     revealed by the "Show more" button.
    - videoType: "youtube", "vimeo" or "file". Leave "" to auto-detect.
    - orientation: "vertical" for 9:16 videos or "wide" for 16:9.
-   - The hero (introduction) plays the INTRO video defined below.
-   - thumbnail: an image URL or file name. If the image is missing,
-     the first frame of a local video is used instead.
-   - Local files: keep video and image files next to index.html.
    ===================================================== */
-const projects = [
- /* featured:true = shown first. Everything else sits behind the "Show more" button. */
- {featured:true,title:"Vigewell Collagen Wand",category:"brand",categoryLabel:"Ad Concept",
-  description:"A skincare product ad with a problem-to-solution flow, animated callouts, color-shifting backgrounds and highlighted captions.",
-  thumbnail:"project-7.jpg",videoUrl:"vigewell-collagen-wand.mp4",videoType:"file",orientation:"vertical",tags:["ugc","skincare","ad","ai"],tools:["Motion graphics","Captions","Ad structure"]},
- {featured:true,title:"The Secret Heir",category:"social",categoryLabel:"YouTube Short",
-  description:"An AI-animated story short with bold word-by-word captions and a twist reveal, built to hold attention from the first line.",
-  thumbnail:"project-5.jpg",videoUrl:"secret-heir.mp4",videoType:"file",orientation:"vertical",tags:["short-form","shorts","ai","story"],tools:["Captions","AI visuals","Story pacing"]},
- {featured:true,title:"Dream Home Tour",category:"realestate",categoryLabel:"Real Estate Short-Form",
-  description:"A vertical real estate tour with AI visuals, room-by-room labels and smooth transitions from the entrance to the kitchen.",
-  thumbnail:"project-6.jpg",videoUrl:"catchy_home_tour-compressed.mp4",videoType:"file",orientation:"vertical",tags:["real-estate","tour","short-form","ai"],tools:["Motion text","Transitions","Pacing"]},
- {featured:true,title:"Burger Station Ad",category:"brand",categoryLabel:"Ad Concept",
-  description:"A one-minute vertical food ad concept that moves from fire and lava into a juicy burger reveal.",
-  thumbnail:"project-3.jpg",videoUrl:"lv_0_20261020100907.mp4",videoType:"file",orientation:"vertical",tags:["food","ad","ai"],tools:["Ad structure","Sound","Motion text"]},
- {title:"Pick Your Game",category:"social",categoryLabel:"Short-Form Edit",
-  description:"A fast vertical short mixing game visuals, meme clips and bold word-by-word captions.",
-  thumbnail:"project-1.jpg",videoUrl:"lv_0_20260929212649.mp4",videoType:"file",orientation:"vertical",tags:["short-form","gaming","meme"],tools:["Captions","Quick cuts","Meme timing"]},
- {title:"Train Etiquette",category:"social",categoryLabel:"YouTube Short",
-  description:"A vertical short about commuter manners, using animated visuals, real clips and on-screen captions.",
-  thumbnail:"project-2.jpg",videoUrl:"lv_0_20261003095001.mp4",videoType:"file",orientation:"vertical",tags:["shorts","short-form","ai","explainer"],tools:["Captions","AI visuals","Pacing"]},
- {title:"Neighborhood Afternoon",category:"cinematic",categoryLabel:"Cinematic Short",
-  description:"A widescreen street story following kids at play, built around warm color, transitions and slow pacing.",
-  thumbnail:"project-4.jpg",videoUrl:"lv_0_20261021183725.mp4",videoType:"file",orientation:"wide",tags:["cinematic","story"],tools:["Color mood","Transitions","Pacing"]},
- {title:"Video Sales Letter",category:"brand",categoryLabel:"Ad Concept",
-  description:"A long-form vertical sales video with German captions, health animations and lifestyle footage, edited to keep a two-minute pitch moving.",
-  thumbnail:"project-8.jpg",videoUrl:"vsl.mp4",videoType:"file",orientation:"vertical",tags:["vsl","long-form","health","ad"],tools:["Long-form pacing","Captions","B-roll"]}
-];
+const projects = Array.isArray(window.PROJECTS) ? window.PROJECTS : [];
 
 /* INTRO VIDEO: plays in the hero (introduction) frame */
-const INTRO={title:"Hi, I'm Jerome",thumbnail:"intro-thumb.jpg",categoryLabel:"Introduction",description:"A quick introduction to me and the kind of videos I edit.",videoUrl:"intro.mp4",videoType:"file",orientation:"vertical"};
+const INTRO={title:"Hi, I'm Jerome",thumbnail:"",categoryLabel:"Introduction",description:"A quick introduction to me and the kind of videos I edit.",videoUrl:"assets/media/intro.mp4",videoType:"file",orientation:"vertical"};
 
 const palettes=[["#2a3314","#0d0e0c"],["#1d2a2e","#0d0e0c"],["#33270f","#0d0e0c"],["#2a1d33","#0d0e0c"]];
 const $=s=>document.querySelector(s);
@@ -628,7 +613,21 @@ if(TOOLS.length){
  $("#toolsRow").hidden=false;
 }
 
-/* Contact + footer links (only what is filled in above) */
+/* Ready replies + contact/footer links */
+(function(){
+ const answers={
+  services:"I edit short-form videos, YouTube Shorts, YouTube ads, AI animation concepts and real estate videos.",
+  process:"Send me your idea, footage or reference link. We can discuss the goal, style, deadline and next steps.",
+  availability:"Please send me a message with your project details and deadline. I’ll confirm my availability as soon as possible."
+ };
+ const answer=$("#replyAnswer");
+ document.querySelectorAll("[data-reply]").forEach(button=>button.addEventListener("click",()=>{
+  document.querySelectorAll("[data-reply]").forEach(item=>item.setAttribute("aria-pressed",item===button));
+  answer.textContent=answers[button.dataset.reply]||"Send me a message and I’ll be happy to help.";
+  answer.classList.add("open");
+ }));
+})();
+
 (function(){
  const box=$("#contactBox"),foot=$("#footLinks");
  const hasClip=!!(navigator.clipboard&&navigator.clipboard.writeText);
@@ -678,6 +677,5 @@ if("IntersectionObserver" in window){
 $("#year").textContent=new Date().getFullYear();
 
 </script>
-  <script src="chatbot-widget.js" defer></script>
 </body>
 </html>
