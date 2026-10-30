@@ -84,7 +84,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,12,10,.82);backdrop-f
 .filters button{background:none;border:1px solid var(--line);color:var(--muted);padding:9px 20px;border-radius:999px;font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;transition:.2s}
 .filters button:hover{color:var(--text);border-color:var(--muted)}
 .filters button[aria-pressed="true"]{background:var(--lime);color:var(--ink);border-color:var(--lime);box-shadow:0 6px 22px rgba(198,244,50,.28)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:start}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:start}
 .card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;text-align:left;color:inherit;font:inherit;padding:0;display:flex;flex-direction:column;transition:border-color .25s,transform .3s,box-shadow .3s}
 .card::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(198,244,50,.16),transparent 45%)}
 .card:hover{border-color:var(--lime);transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 40px rgba(198,244,50,.1)}
@@ -101,17 +101,21 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,12,10,.82);backdrop-f
 .thumb video.on{opacity:1}
 .card:hover .thumb img{transform:scale(1.05)}
 .thumb .pi{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
-.thumb .pi i{width:60px;height:60px;border-radius:50%;background:rgba(198,244,50,.95);display:grid;place-items:center;transition:transform .3s,box-shadow .3s}
+.thumb .pi i{width:52px;height:52px;border-radius:50%;background:rgba(198,244,50,.95);display:grid;place-items:center;transition:transform .3s,box-shadow .3s}
 .card:hover .pi i{transform:scale(1.15);box-shadow:0 0 0 12px rgba(198,244,50,.2)}
 .pi svg{width:20px;margin-left:3px;fill:var(--ink)}
-.body{padding:22px 24px 26px}
+.body{padding:18px 18px 22px}
 .cat{color:var(--lime);font-size:.82rem;font-weight:700}
-.body h3{font-size:1.35rem;margin:6px 0 10px}
+.body h3{font-size:1.15rem;margin:6px 0 8px}
 .card.wide .body h3{font-size:1.8rem}
-.body p{color:var(--muted);font-size:.96rem;margin-bottom:16px}
+.body p{color:var(--muted);font-size:.88rem;line-height:1.5;margin-bottom:14px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none}
-.tags li{font-size:.78rem;border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--muted)}
+.tags li{font-size:.72rem;border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--muted)}
 .card[hidden]{display:none}
+.more{text-align:center;margin-top:44px}
+.more[hidden],.more .btn[hidden]{display:none}
+.btn.ghost{background:transparent;color:var(--lime)}
+.btn.ghost:hover{background:var(--lime);color:var(--ink)}
 /* MODAL */
 .modal{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.9);backdrop-filter:blur(8px)}
 .modal.open{display:flex;animation:fade .2s}
@@ -145,7 +149,7 @@ body.lock{overflow:hidden}
 .values h3{font-size:1rem;color:var(--lime);margin-bottom:6px}
 .values p{font-size:.9rem;margin:0}
 /* WHAT I DO */
-.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.cols{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
 .box{position:relative;border:1px solid var(--line);border-radius:var(--r);padding:30px;background:var(--panel);overflow:hidden;transition:.3s}
 .box::before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--lime);transition:width .4s}
 .box:hover{border-color:#3d4430;transform:translateY(-4px)}
@@ -237,7 +241,7 @@ footer{border-top:1px solid var(--line);padding:36px 0}
     <p class="intro">I'm Jerome Arcilla, a video editor focused on short-form, YouTube ads and AI animation. Clean cuts, thoughtful pacing, and visuals that make people feel something.</p>
     <a class="btn" href="#work">See my work</a>
     <ul class="niches" aria-label="What I edit">
-     <li>Short-form</li><li>YouTube Shorts</li><li>YouTube ads</li><li>AI animation</li><li>AI ads</li>
+     <li>Short-form</li><li>YouTube Shorts</li><li>YouTube ads</li><li>AI animation</li><li>AI ads</li><li>Real estate short-form</li>
     </ul>
    </div>
    <div class="frame" id="heroFrame" role="button" tabindex="0" aria-label="Play my introduction video with sound">
@@ -269,8 +273,10 @@ footer{border-top:1px solid var(--line);padding:36px 0}
     <button type="button" data-filter="cinematic" aria-pressed="false">Cinematic</button>
     <button type="button" data-filter="social" aria-pressed="false">Social Video</button>
     <button type="button" data-filter="brand" aria-pressed="false">Brand Concept</button>
+    <button type="button" data-filter="realestate" aria-pressed="false">Real Estate</button>
    </div>
    <div class="grid" id="grid"></div>
+   <div class="more"><button type="button" class="btn ghost" id="more" aria-expanded="false" hidden>Show more</button></div>
   </div>
  </section>
 
@@ -300,6 +306,7 @@ footer{border-top:1px solid var(--line);padding:36px 0}
     <div class="box"><h3>Short-form edits</h3><p>Vertical edits for YouTube Shorts and other short platforms, with clean cuts, captions, sound and tight pacing.</p></div>
     <div class="box"><h3>YouTube ads and videos</h3><p>Edits for YouTube videos and ad concepts, including ads that use AI visuals.</p></div>
     <div class="box"><h3>AI animation concepts</h3><p>Concept pieces that combine AI-generated animation with editing, color and sound.</p></div>
+    <div class="box"><h3>Real estate short-form</h3><p>Vertical property tours and listing videos with room labels, smooth transitions and clean pacing.</p></div>
    </div>
    <div class="how">
     <div><h3>Editing and pacing</h3><p>Trimming footage into clear, well-timed videos.</p></div>
@@ -360,7 +367,9 @@ const TOOLS=[];
    PROJECTS: HOW TO EDIT
    - Add a project: copy one { ... } block, add a comma, edit it.
    - Remove a project: delete its whole { ... } block.
-   - category must be: "cinematic", "social" or "brand".
+   - category must be: "cinematic", "social", "brand" or "realestate".
+   - featured:true puts a project in the first group. The rest are
+     revealed by the "Show more" button (best 3 or 4 work best).
    - videoUrl: paste a YouTube, Vimeo, .mp4 or .webm link.
    - videoType: "youtube", "vimeo" or "file". Leave "" to auto-detect.
    - orientation: "vertical" for 9:16 videos or "wide" for 16:9.
@@ -370,18 +379,31 @@ const TOOLS=[];
    - Local files: keep video and image files next to index.html.
    ===================================================== */
 const projects = [
+ /* featured:true = shown first. Everything else sits behind the "Show more" button. */
+ {featured:true,title:"Vigewell Collagen Wand",category:"brand",categoryLabel:"Ad Concept",
+  description:"A skincare product ad with a problem-to-solution flow, animated callouts, color-shifting backgrounds and highlighted captions.",
+  thumbnail:"project-7.jpg",videoUrl:"vigewell-collagen-wand.mp4",videoType:"file",orientation:"vertical",tools:["Motion graphics","Captions","Ad structure"]},
+ {featured:true,title:"The Secret Heir",category:"social",categoryLabel:"YouTube Short",
+  description:"An AI-animated story short with bold word-by-word captions and a twist reveal, built to hold attention from the first line.",
+  thumbnail:"project-5.jpg",videoUrl:"secret-heir.mp4",videoType:"file",orientation:"vertical",tools:["Captions","AI visuals","Story pacing"]},
+ {featured:true,title:"Dream Home Tour",category:"realestate",categoryLabel:"Real Estate Short-Form",
+  description:"A vertical real estate tour with AI visuals, room-by-room labels and smooth transitions from the entrance to the kitchen.",
+  thumbnail:"project-6.jpg",videoUrl:"catchy_home_tour-compressed.mp4",videoType:"file",orientation:"vertical",tools:["Motion text","Transitions","Pacing"]},
+ {featured:true,title:"Burger Station Ad",category:"brand",categoryLabel:"Ad Concept",
+  description:"A one-minute vertical food ad concept that moves from fire and lava into a juicy burger reveal.",
+  thumbnail:"project-3.jpg",videoUrl:"lv_0_20261020100907.mp4",videoType:"file",orientation:"vertical",tools:["Ad structure","Sound","Motion text"]},
  {title:"Pick Your Game",category:"social",categoryLabel:"Short-Form Edit",
   description:"A fast vertical short mixing game visuals, meme clips and bold word-by-word captions.",
   thumbnail:"project-1.jpg",videoUrl:"lv_0_20260929212649.mp4",videoType:"file",orientation:"vertical",tools:["Captions","Quick cuts","Meme timing"]},
  {title:"Train Etiquette",category:"social",categoryLabel:"YouTube Short",
   description:"A vertical short about commuter manners, using animated visuals, real clips and on-screen captions.",
   thumbnail:"project-2.jpg",videoUrl:"lv_0_20261003095001.mp4",videoType:"file",orientation:"vertical",tools:["Captions","AI visuals","Pacing"]},
- {title:"Burger Station Ad",category:"brand",categoryLabel:"Ad Concept",
-  description:"A one-minute vertical food ad concept that moves from fire and lava into a juicy burger reveal.",
-  thumbnail:"project-3.jpg",videoUrl:"lv_0_20261020100907.mp4",videoType:"file",orientation:"vertical",tools:["Ad structure","Sound","Motion text"]},
  {title:"Neighborhood Afternoon",category:"cinematic",categoryLabel:"Cinematic Short",
   description:"A widescreen street story following kids at play, built around warm color, transitions and slow pacing.",
-  thumbnail:"project-4.jpg",videoUrl:"lv_0_20261021183725.mp4",videoType:"file",orientation:"wide",tools:["Color mood","Transitions","Pacing"]}
+  thumbnail:"project-4.jpg",videoUrl:"lv_0_20261021183725.mp4",videoType:"file",orientation:"wide",tools:["Color mood","Transitions","Pacing"]},
+ {title:"Video Sales Letter",category:"brand",categoryLabel:"Ad Concept",
+  description:"A long-form vertical sales video with German captions, health animations and lifestyle footage, edited to keep a two-minute pitch moving.",
+  thumbnail:"project-8.jpg",videoUrl:"vsl.mp4",videoType:"file",orientation:"vertical",tools:["Long-form pacing","Captions","B-roll"]}
 ];
 
 /* INTRO VIDEO: plays in the hero (introduction) frame */
@@ -459,13 +481,33 @@ projects.forEach((p,i)=>{
  grid.appendChild(b);
 });
 
-/* Filters */
+/* Filters + "Show more" */
+const more=$("#more");
+let currentFilter="all",expanded=false;
+const hasFeatured=projects.some(p=>p.featured);
+function applyView(){
+ document.querySelectorAll(".card").forEach(c=>{
+  const p=projects[+c.dataset.index];
+  const match=currentFilter==="all"||c.dataset.category===currentFilter;
+  const inGroup=currentFilter!=="all"||expanded||!hasFeatured||p.featured;
+  c.hidden=!(match&&inGroup);
+ });
+ const extra=hasFeatured?projects.filter(p=>!p.featured).length:0;
+ more.hidden=currentFilter!=="all"||extra===0;
+ more.textContent=expanded?"Show less":"Show more ("+extra+")";
+ more.setAttribute("aria-expanded",expanded);
+}
 $("#filters").addEventListener("click",e=>{
  const btn=e.target.closest("button");if(!btn)return;
- const f=btn.dataset.filter;
+ currentFilter=btn.dataset.filter;
  document.querySelectorAll("#filters button").forEach(x=>x.setAttribute("aria-pressed",x===btn));
- document.querySelectorAll(".card").forEach(c=>{c.hidden=!(f==="all"||c.dataset.category===f)});
+ applyView();
 });
+more.addEventListener("click",()=>{
+ expanded=!expanded;applyView();
+ if(!expanded)$("#work").scrollIntoView({behavior:reduce?"auto":"smooth"});
+});
+applyView();
 
 /* Modal with previous / next */
 const modal=$("#modal"),player=$("#player");
@@ -558,7 +600,7 @@ menu.addEventListener("click",e=>{if(e.target.closest("a"))setMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu.classList.contains("open")){setMenu(false);burger.focus()}});
 
 /* Marquee: what I offer */
-const words=["Short-form edits","YouTube Shorts","YouTube ads","AI animation","AI ads"];
+const words=["Short-form edits","YouTube Shorts","YouTube ads","AI animation","AI ads","Real estate short-form"];
 const run=words.map(w=>`<span>${w}</span>`).join("");
 $("#track").innerHTML=run+run+run+run;
 
